@@ -19,6 +19,7 @@ class AuthorsResource extends JsonResource
             'type' => 'Authors',
             'attributes' => [
                 'name' => $this->name,
+                'books' => $this->book,
                 'created_at' => $this->created_at,
                 'updated_at' => $this->updated_at
             ]

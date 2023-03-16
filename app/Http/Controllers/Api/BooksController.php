@@ -5,8 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Models\Book;
 use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
-use App\Http\Resources\BookResource;
+use App\Http\Resources\BooksResource;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class BooksController extends Controller
 {
@@ -15,7 +16,7 @@ class BooksController extends Controller
      */
     public function index()
     {
-        return BookResource::collection(Book::all());
+        return BooksResource::collection(Book::all());
     }
 
     /**
@@ -23,7 +24,15 @@ class BooksController extends Controller
      */
     public function store(StoreBookRequest $request)
     {
-        //
+        $request->validated($request->all());
+
+        $book = Book::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'publication_year' => $request->publication_year
+        ]);
+
+        return new BooksResource($book);
     }
 
     /**
@@ -31,15 +40,23 @@ class BooksController extends Controller
      */
     public function show(Book $book)
     {
-        //
+        return new BooksResource($book);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateBookRequest $request, Book $book)
+    public function update(Request $request, Book $book)
     {
-        //
+        $request->validated($request->all());
+
+        $book->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'publication_year' => $request->publication_year
+        ]);
+
+        return new BooksResource($book);
     }
 
     /**
@@ -47,6 +64,7 @@ class BooksController extends Controller
      */
     public function destroy(Book $book)
     {
-        //
+        $book->delete();
+        return response(null, 204);
     }
 }
